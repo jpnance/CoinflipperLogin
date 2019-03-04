@@ -1,0 +1,16 @@
+users {
+	_id: 'snathoeusnatoheu',
+	username: 'jpnance',
+	name: {
+		first: 'Patrick',
+		last: 'Nance',
+		nick: 'Pat'
+	},
+	password: 'whatever man like seriously'
+}
+
+sessions {
+	_id: 'qjwkbmjqwmkbjqkmwbethkbue',
+	username: 'jpnance',
+	cookie: 'oaeusnatoheusantoehusantoehu'
+}
