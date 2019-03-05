@@ -7,8 +7,7 @@ const linkSchema = new Schema({
 	createdAt: { type: Date, default: Date.now, expires: 300 }
 });
 
-linkSchema.statics.generateKey = () => {
-	const length = 6;
+linkSchema.statics.generateKey = (length) => {
 	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 	var key = '';

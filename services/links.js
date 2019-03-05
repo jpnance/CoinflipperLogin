@@ -17,7 +17,7 @@ module.exports.create = (request, response) => {
 			}
 			else {
 				var link = new Link({
-					key: Link.generateKey(),
+					key: Link.generateKey(6),
 					user: user._id
 				});
 

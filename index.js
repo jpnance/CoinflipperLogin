@@ -15,6 +15,7 @@ mongoose.connect(mongoUri, { useNewUrlParser: true });
 
 const users = require('./services/users');
 const links = require('./services/links');
+const sessions = require('./services/sessions');
 
 app.get('/', (request, response) => {
 	response.send('Hello, world!');
@@ -23,6 +24,8 @@ app.get('/', (request, response) => {
 app.post('/users/create', users.create);
 
 app.post('/links/create', links.create);
+
+app.get('/sessions/create/:key', sessions.create);
 
 app.listen(port, () => {
 	console.log('Listening on port', port);
