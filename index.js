@@ -14,12 +14,15 @@ const mongoUri = process.env.MONGODB_URI || null;
 mongoose.connect(mongoUri, { useNewUrlParser: true });
 
 const users = require('./services/users');
+const links = require('./services/links');
 
 app.get('/', (request, response) => {
 	response.send('Hello, world!');
 });
 
 app.post('/users/create', users.create);
+
+app.post('/links/create', links.create);
 
 app.listen(port, () => {
 	console.log('Listening on port', port);
