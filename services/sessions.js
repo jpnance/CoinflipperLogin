@@ -2,12 +2,12 @@ const Link = require('../models/link');
 const Session = require('../models/session');
 
 module.exports.create = (request, response) => {
-	if (!request.params.key) {
-		response.status(400).send({ error: 'No key provided.' });
+	if (!request.params.linkKey) {
+		response.status(400).send({ error: 'No magic link key provided.' });
 	}
 	else {
 		Link.findOneAndDelete({
-			key: request.params.key
+			key: request.params.linkKey
 		}, (error, link) => {
 			if (error) {
 				response.status(400).send(error);
@@ -18,7 +18,7 @@ module.exports.create = (request, response) => {
 			else {
 				var session = new Session({
 					user: link.user,
-					cookie: Link.generateKey(32)
+					key: Link.generateKey(32)
 				});
 
 				session.save((error) => {
@@ -26,9 +26,28 @@ module.exports.create = (request, response) => {
 						response.status(500).send(error);
 					}
 					else {
-						response.send(session);
+						response.cookie('sessionKey', session.key, { expires: new Date('2038-01-01') }).send(session);
 					}
 				});
+			}
+		});
+	}
+};
+
+module.exports.retrieve = (request, response) => {
+	if (!request.params.key) {
+		response.status(400).send({ error: 'No session key provided.' });
+	}
+	else {
+		Session.findOne({ key: request.params.key }).populate('user').exec((error, session) => {
+			if (error) {
+				response.status(500).send(error);
+			}
+			else if (!session) {
+				response.status(404).send({ error: 'No session found for that key.' });
+			}
+			else {
+				response.send(session);
 			}
 		});
 	}
