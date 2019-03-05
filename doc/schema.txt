@@ -6,7 +6,12 @@ users {
 		last: 'Nance',
 		nick: 'Pat'
 	},
-	password: 'whatever man like seriously'
+	admin: true
+}
+
+links {
+	_id: 'u4i5d6h7t8',
+	userId: 'snathoeusnatoheu'
 }
 
 sessions {
