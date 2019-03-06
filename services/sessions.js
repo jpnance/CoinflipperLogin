@@ -26,7 +26,7 @@ module.exports.create = (request, response) => {
 						response.status(500).send(error);
 					}
 					else {
-						response.cookie('sessionKey', session.key, { expires: new Date('2038-01-01') }).send(session);
+						response.send(session);
 					}
 				});
 			}
