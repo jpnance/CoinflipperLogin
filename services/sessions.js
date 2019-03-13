@@ -26,7 +26,7 @@ module.exports.create = (request, response) => {
 						response.status(500).send(error);
 					}
 					else {
-						response.send(session);
+						response.cookie('sessionKey', session.key, { domain: 'dev.coinflipper.org', expires: new Date('2038-01-01') }).send(session);
 					}
 				});
 			}
