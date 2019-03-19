@@ -26,7 +26,14 @@ module.exports.create = (request, response) => {
 						response.status(500).send(error);
 					}
 					else {
-						response.cookie('sessionKey', session.key, { domain: 'dev.coinflipper.org', expires: new Date('2038-01-01') }).send(session);
+						response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01') })
+
+						if (link.redirectTo) {
+							response.redirect(link.redirectTo);
+						}
+						else {
+							response.send(session);
+						}
 					}
 				});
 			}

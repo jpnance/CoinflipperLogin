@@ -21,6 +21,10 @@ module.exports.create = (request, response) => {
 					user: user._id
 				});
 
+				if (request.body.redirectTo) {
+					link.redirectTo = request.body.redirectTo;
+				}
+
 				link.save((error) => {
 					if (error) {
 						response.status(400).send(error);
