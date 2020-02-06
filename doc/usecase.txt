@@ -1,0 +1,10 @@
+Summer Classics:
+	1. login.coinflipper.org/sessions/retrieve/[sessionKey]
+		a. If 404, redirect to login.coinflipper.org
+
+Login Server:
+	1. login.coinflippper.org prompts for email address
+		a. If email doesn't exist in the system, 404
+	2. Create a magic link and email it to that email address
+	3. When the user clicks a magic link, set their session cookie to that session ID
+
