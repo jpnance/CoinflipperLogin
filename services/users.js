@@ -1,7 +1,9 @@
 const User = require('../models/user');
 
 module.exports.create = (request, response) => {
-	if (!request.body.adminKey || request.body.adminKey != process.env.ADMIN_KEY) {
+	var adminKey = request.get('Coinflipper-Api-Key');
+
+	if (!adminKey || adminKey != process.env.ADMIN_KEY) {
 		response.status(401).send({ error: 'No authorization key provided.' });
 	}
 	else if (!request.body.email) {
