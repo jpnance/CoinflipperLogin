@@ -44,7 +44,7 @@ module.exports.create = (request, response) => {
 						});
 
 						nodemailer.sendMail({
-							from: '"Coinflipper Login" coinflippergames@gmail.com',
+							from: process.env.GMAIL_FROM,
 							to: user.email,
 
 							subject: 'Coinflipper Login Link for ' + user.email,
