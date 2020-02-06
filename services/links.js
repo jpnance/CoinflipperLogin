@@ -44,12 +44,12 @@ module.exports.create = (request, response) => {
 						});
 
 						nodemailer.sendMail({
-							from: 'coinflippergames@gmail.com',
+							from: '"Coinflipper Login" coinflippergames@gmail.com',
 							to: user.email,
 
 							subject: 'Coinflipper Login Link for ' + user.email,
 
-							text: 'Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games.' + "\n\n" + 'https://login.coinflipper.org/sessions/create/' + link.key
+							text: (process.env.ENVIRONMENT == 'prod') ? ('Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games.' + "\n\n" + 'https://login.' + process.env.COOKIE_DOMAIN + '/sessions/create/' + link.key) : ('http://login.' + process.env.COOKIE_DOMAIN + ':' + process.env.PORT + '/sessions/create/' + link.key)
 						}).then(function() {
 							response.send(link);
 						}).catch(function(error) {
