@@ -15,6 +15,12 @@ module.exports.create = (request, response) => {
 	else {
 		var user = new User({
 			email: request.body.email,
+			username: request.body.username,
+			name: {
+				first: request.body.name.first,
+				last: request.body.name.last,
+				nick: request.body.name.nick
+			},
 			admin: false
 		});
 
