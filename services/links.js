@@ -29,6 +29,33 @@ module.exports.create = (request, response) => {
 					if (error) {
 						response.status(400).send(error);
 					}
+					else if (request.body.sendLoginLink) {
+						const nodemailer = require('nodemailer').createTransport({
+							host: 'smtp.gmail.com',
+							port: 465,
+							secure: true,
+							auth: {
+								user: process.env.GMAIL_USERNAME,
+								pass: process.env.GMAIL_PASSWORD
+							},
+							tls: {
+								rejectUnauthorized: false
+							}
+						});
+
+						nodemailer.sendMail({
+							from: 'coinflippergames@gmail.com',
+							to: user.email,
+
+							subject: 'Coinflipper Login Link for ' + user.email,
+
+							text: 'Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games.' + "\n\n" + 'https://login.coinflipper.org/sessions/create/' + link.key
+						}).then(function() {
+							response.send(link);
+						}).catch(function(error) {
+							response.status(500).send(error);
+						});
+					}
 					else {
 						response.send(link);
 					}
