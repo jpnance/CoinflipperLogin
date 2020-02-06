@@ -13,7 +13,7 @@ app.use(cookieParser());
 const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || null;
 
-mongoose.connect(mongoUri, { useNewUrlParser: true });
+mongoose.connect(mongoUri, { useCreateIndex: true, useNewUrlParser: true });
 
 const users = require('./services/users');
 const links = require('./services/links');
