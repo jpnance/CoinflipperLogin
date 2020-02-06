@@ -24,6 +24,7 @@ app.get('/', (request, response) => {
 });
 
 app.post('/users/create', users.create);
+app.get('/users/retrieve/:email', users.retrieve);
 
 app.post('/links/create', links.create);
 

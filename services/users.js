@@ -34,3 +34,29 @@ module.exports.create = (request, response) => {
 		});
 	}
 };
+
+module.exports.retrieve = (request, response) => {
+	var adminKey = request.get('Coinflipper-Api-Key');
+
+	if (!adminKey || adminKey != process.env.ADMIN_KEY) {
+		response.status(401).send({ error: 'No authorization key provided.' });
+	}
+	else if (!request.params.email) {
+		response.status(400).send({ error: 'No email address provided.' });
+	}
+	else {
+		var user = User.findOne({ email: request.params.email }, (error, user) => {
+			if (error) {
+				response.status(500).send(error);
+				return;
+			}
+			else if (!user) {
+				response.status(404).send({ message: 'No user found with that email address.' });
+				return;
+			}
+			else {
+				response.send(user);
+			}
+		})
+	}
+};
