@@ -26,7 +26,7 @@ module.exports.create = (request, response) => {
 						response.status(500).send(error);
 					}
 					else {
-						response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01') })
+						response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
 
 						if (link.redirectTo) {
 							response.redirect(link.redirectTo);
@@ -36,6 +36,28 @@ module.exports.create = (request, response) => {
 						}
 					}
 				});
+			}
+		});
+	}
+};
+
+module.exports.delete = (request, response) => {
+	if (!request.params.key && !request.cookies.sessionKey) {
+		response.status(400).send({ error: 'No session key provided.' });
+	}
+	else {
+		var sessionKey = request.params.key || request.cookies.sessionKey;
+
+		Session.deleteOne({ key: sessionKey }).exec((error, stats) => {
+			if (error) {
+				response.status(500).send(error);
+			}
+			else if (stats.deletedCount == 0) {
+				response.status(404).send({ error: 'No session found for that key.' });
+			}
+			else {
+				response.clearCookie('sessionKey');
+				response.status(200).send({});
 			}
 		});
 	}

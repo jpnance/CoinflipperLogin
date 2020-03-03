@@ -30,7 +30,28 @@ app.post('/links/create', links.create);
 
 app.get('/sessions/retrieve/:key', sessions.retrieve);
 app.get('/sessions/create/:linkKey', sessions.create);
+app.get('/sessions/delete', sessions.delete);
+app.get('/sessions/delete/:key', sessions.delete);
 
-app.listen(port, () => {
-	console.log('Listening on port', port);
-});
+if (process.env.NODE_ENV == 'dev') {
+	const fs = require('fs');
+	const https = require('https');
+
+	const options = {
+		key: fs.readFileSync('../ssl/server.key'),
+		cert: fs.readFileSync('../ssl/server.crt'),
+		requestCert: false,
+		rejectUnauthorized: false
+	};
+
+	const server = https.createServer(options, app);
+
+	server.listen(port, () => {
+		console.log('Listening on port', port);
+	});
+}
+else {
+	app.listen(port, () => {
+		console.log('Listening on port', port);
+	});
+}
