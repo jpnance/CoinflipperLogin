@@ -57,7 +57,14 @@ module.exports.delete = (request, response) => {
 			}
 			else {
 				response.clearCookie('sessionKey');
-				response.status(200).send({});
+
+				if (request.headers.referer && request.headers.referer.startsWith('https://')) {
+					var sanitizedReferer = request.headers.referer.split('/').slice(0, 3).join('/');
+					response.redirect(sanitizedReferer);
+				}
+				else {
+					response.status(200).send({});
+				}
 			}
 		});
 	}
@@ -84,7 +91,14 @@ module.exports.deleteAll = (request, response) => {
 					}
 					else {
 						response.clearCookie('sessionKey');
-						response.status(200).send({});
+
+						if (request.headers.referer && request.headers.referer.startsWith('https://')) {
+							var sanitizedReferer = request.headers.referer.split('/').slice(0, 3).join('/');
+							response.redirect(sanitizedReferer);
+						}
+						else {
+							response.status(200).send({});
+						}
 					}
 				});
 			}
