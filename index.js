@@ -39,6 +39,8 @@ app.get('/sessions/retrieve/:key', sessions.retrieve);
 app.get('/sessions/create/:linkKey', sessions.create);
 app.get('/sessions/delete', sessions.delete);
 app.get('/sessions/delete/:key', sessions.delete);
+app.get('/sessions/deleteAll', sessions.deleteAll);
+app.get('/sessions/deleteAll/:key', sessions.deleteAll);
 
 if (process.env.NODE_ENV == 'dev') {
 	const fs = require('fs');

@@ -63,6 +63,35 @@ module.exports.delete = (request, response) => {
 	}
 };
 
+module.exports.deleteAll = (request, response) => {
+	if (!request.params.key && !request.cookies.sessionKey) {
+		response.status(400).send({ error: 'No session key provided.' });
+	}
+	else {
+		var sessionKey = request.params.key || request.cookies.sessionKey;
+
+		Session.findOne({ key: sessionKey }).exec((error, session) => {
+			if (error) {
+				response.status(500).send(error);
+			}
+			else if (!session) {
+				response.status(404).send({ error: 'No session found for that key.' });
+			}
+			else {
+				Session.deleteMany({ user: session.user }).exec((error, stats) => {
+					if (error) {
+						response.status(500).send(error);
+					}
+					else {
+						response.clearCookie('sessionKey');
+						response.status(200).send({});
+					}
+				});
+			}
+		});
+	}
+};
+
 module.exports.retrieve = (request, response) => {
 	if (!request.params.key) {
 		response.status(400).send({ error: 'No session key provided.' });
