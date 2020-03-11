@@ -10,6 +10,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const allowCoinflipperSites = (request, response, next) => {
+	response.set('Access-Control-Allow-Origin', process.env.ALLOWED_DOMAINS);
+	next();
+};
+
+app.use(allowCoinflipperSites);
+
 const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || null;
 
