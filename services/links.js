@@ -51,13 +51,17 @@ module.exports.create = (request, response) => {
 
 							text: (process.env.NODE_ENV == 'production') ? ('Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games on this device.' + "\n\n" + 'https://login.' + process.env.COOKIE_DOMAIN + '/sessions/create/' + link.key) : ('https://login.' + process.env.COOKIE_DOMAIN + ':' + process.env.PORT + '/sessions/create/' + link.key)
 						}).then(function() {
-							response.send(link);
+							response.send({
+								redirectTo: link.redirectTo
+							});
 						}).catch(function(error) {
 							response.status(500).send(error);
 						});
 					}
 					else {
-						response.send(link);
+						response.send({
+							redirectTo: link.redirectTo
+						});
 					}
 				});
 			}
