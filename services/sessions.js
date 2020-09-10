@@ -6,7 +6,7 @@ module.exports.create = (request, response) => {
 		response.status(400).send({ error: 'No magic link key provided.' });
 	}
 	else {
-		Link.findOneAndDelete({
+		Link.findOne({
 			key: request.params.linkKey
 		}, (error, link) => {
 			if (error) {
