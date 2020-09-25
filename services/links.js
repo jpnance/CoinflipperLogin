@@ -49,7 +49,7 @@ module.exports.create = (request, response) => {
 
 							subject: 'Coinflipper Login Link for ' + user.email,
 
-							text: (process.env.NODE_ENV == 'production') ? ('Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games on this device.' + "\n\n" + 'https://login.' + process.env.COOKIE_DOMAIN + '/sessions/create/' + link.key) : ('https://login.' + process.env.COOKIE_DOMAIN + ':' + process.env.PORT + '/sessions/create/' + link.key)
+							text: (process.env.NODE_ENV == 'production') ? ('Here\'s your Coinflipper login link! Click it anytime within the next five minutes and you\'ll instantly be logged in to all Coinflipper games on this device. If you\'re on an iPhone, you may have better luck copying and pasting the link into the browser app (Safari, Chrome, Firefox, etc.) that you typically use.' + "\n\n" + 'https://login.' + process.env.COOKIE_DOMAIN + '/sessions/create/' + link.key) : ('https://login.' + process.env.COOKIE_DOMAIN + ':' + process.env.PORT + '/sessions/create/' + link.key)
 						}).then(function() {
 							response.send({
 								redirectTo: link.redirectTo
