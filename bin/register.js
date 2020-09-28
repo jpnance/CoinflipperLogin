@@ -47,13 +47,13 @@ var lastNamePrompt = (user) => {
 var nickNamePrompt = (user) => {
 	rl.question('Nickname: ', (nickName) => {
 		if (nickName == '') {
-			nickNamePrompt(user);
-			return;
+			user.name.nick = user.name.first;
+		}
+		else {
+			user.name.nick = nickName;
 		}
 
 		rl.close();
-
-		user.name.nick = nickName;
 
 		user.save((error) => {
 			if (error) {
