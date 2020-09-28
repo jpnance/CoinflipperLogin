@@ -35,11 +35,13 @@ app.get('/', (request, response) => {
 	response.send('Hello, world!');
 });
 
+app.get('/users', users.showAll);
 app.post('/users/create', users.create);
 app.get('/users/retrieve/:email', users.retrieve);
 
 app.post('/links/create', links.create);
 
+app.get('/sessions', sessions.showAll);
 app.get('/sessions/retrieve/:key', sessions.retrieve);
 app.get('/sessions/create/:linkKey', sessions.create);
 app.get('/sessions/delete', sessions.delete);

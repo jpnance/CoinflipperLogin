@@ -1,3 +1,4 @@
+const Session = require('../models/session');
 const User = require('../models/user');
 
 module.exports.create = (request, response) => {
@@ -59,4 +60,26 @@ module.exports.retrieve = (request, response) => {
 			}
 		})
 	}
+};
+
+module.exports.showAll = (request, response) => {
+	if (!request.cookies.sessionKey) {
+		response.status(401).send({ error: 'You must be logged in to view this page.' });
+	}
+
+	var dataPromises = [
+		Session.findOne({ key: request.cookies.sessionKey }).populate('user'),
+		User.find({}).populate('user')
+	];
+
+	Promise.all(dataPromises).then(function(values) {
+		var adminSession = values[0];
+		var allUsers = values[1];
+
+		if (!adminSession.user.admin) {
+			response.status(403).send({ error: 'You are not authorized to view this page.' });
+		}
+
+		response.send(allUsers);
+	});
 };
