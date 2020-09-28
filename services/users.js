@@ -76,7 +76,7 @@ module.exports.showAll = (request, response) => {
 		var adminSession = values[0];
 		var allUsers = values[1];
 
-		if (!adminSession.user.admin) {
+		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
 			response.status(403).send({ error: 'You are not authorized to view this page.' });
 		}
 

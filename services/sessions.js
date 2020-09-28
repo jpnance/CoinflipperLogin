@@ -111,7 +111,7 @@ module.exports.retrieve = (request, response) => {
 		response.status(400).send({ error: 'No session key provided.' });
 	}
 	else {
-		Session.findOne({ key: request.params.key }).populate('user').exec((error, session) => {
+		Session.findOneAndUpdate({ key: request.params.key }, { '$set': { lastActivity: Date.now() } }).populate('user').exec((error, session) => {
 			if (error) {
 				response.status(500).send(error);
 			}
@@ -139,14 +139,18 @@ module.exports.showAll = (request, response) => {
 		var adminSession = values[0];
 		var allSessions = values[1];
 
-		if (!adminSession.user.admin) {
+		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
 			response.status(403).send({ error: 'You are not authorized to view this page.' });
 		}
 
 		var sessionMap = {};
 
 		allSessions.forEach(session => {
-			sessionMap[session.user.username] = true;
+			if (!sessionMap[session.user.username]) {
+				sessionMap[session.user.username] = [];
+			}
+
+			sessionMap[session.user.username].push(session.lastActivity);
 		});
 
 		response.send(sessionMap);

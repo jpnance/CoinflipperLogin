@@ -25,7 +25,7 @@ app.use(allowCoinflipperSites);
 const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || null;
 
-mongoose.connect(mongoUri, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoUri, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 const users = require('./services/users');
 const links = require('./services/links');
