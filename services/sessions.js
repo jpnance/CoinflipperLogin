@@ -13,7 +13,7 @@ module.exports.create = (request, response) => {
 				response.status(400).send(error);
 			}
 			else if (!link) {
-				response.status(404).send({ error: 'No magic link found for that key.' });
+				response.status(404).send({ error: 'No magic link found for that key. They expire after five minutes so you might need to request a new one.' });
 			}
 			else {
 				var session = new Session({
