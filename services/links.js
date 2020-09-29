@@ -7,7 +7,7 @@ module.exports.create = (request, response) => {
 	}
 	else {
 		User.findOne({
-			email: request.body.email
+			email: request.body.email.toLowerCase()
 		}, (error, user) => {
 			if (error) {
 				response.status(400).send(error);
