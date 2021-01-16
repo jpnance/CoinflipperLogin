@@ -107,11 +107,11 @@ module.exports.deleteAll = (request, response) => {
 };
 
 module.exports.retrieve = (request, response) => {
-	if (!request.params.key) {
+	if (!request.body.key) {
 		response.status(400).send({ error: 'No session key provided.' });
 	}
 	else {
-		Session.findOneAndUpdate({ key: request.params.key }, { '$set': { lastActivity: Date.now() } }).populate('user').exec((error, session) => {
+		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').exec((error, session) => {
 			if (error) {
 				response.status(500).send(error);
 			}

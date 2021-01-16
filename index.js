@@ -42,7 +42,7 @@ app.get('/users/retrieve/:email', users.retrieve);
 app.post('/links/create', links.create);
 
 app.get('/sessions', sessions.showAll);
-app.get('/sessions/retrieve/:key', sessions.retrieve);
+app.post('/sessions/retrieve', sessions.retrieve);
 app.get('/sessions/create/:linkKey', sessions.create);
 app.get('/sessions/delete', sessions.delete);
 app.get('/sessions/delete/:key', sessions.delete);
