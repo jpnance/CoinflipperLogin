@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config({ path: '../.env' });
+const dotenv = require('dotenv').config({ path: '/app/.env' });
 const readline = require('readline');
 
 const User = require('../models/user');
