@@ -65,6 +65,7 @@ module.exports.retrieve = (request, response) => {
 module.exports.showAll = (request, response) => {
 	if (!request.cookies.sessionKey) {
 		response.status(401).send({ error: 'You must be logged in to view this page.' });
+		return;
 	}
 
 	var dataPromises = [
@@ -78,6 +79,7 @@ module.exports.showAll = (request, response) => {
 
 		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
 			response.status(403).send({ error: 'You are not authorized to view this page.' });
+			return;
 		}
 
 		response.send(allUsers);
