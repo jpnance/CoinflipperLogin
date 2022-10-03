@@ -25,4 +25,3 @@ volumes:
 networks:
     default:
         name: coinflipper
-        external: true
