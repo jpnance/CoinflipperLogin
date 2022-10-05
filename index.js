@@ -48,6 +48,7 @@ app.get('/sessions/delete', sessions.delete);
 app.get('/sessions/delete/:key', sessions.delete);
 app.get('/sessions/deleteAll', sessions.deleteAll);
 app.get('/sessions/deleteAll/:key', sessions.deleteAll);
+app.get('/sessions/pretend/:username', sessions.pretend);
 
 if (process.env.NODE_ENV == 'dev') {
 	const fs = require('fs');

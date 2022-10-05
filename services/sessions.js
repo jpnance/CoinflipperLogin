@@ -1,5 +1,6 @@
 const Link = require('../models/link');
 const Session = require('../models/session');
+const User = require('../models/user');
 
 module.exports.create = (request, response) => {
 	if (!request.params.linkKey) {
@@ -154,5 +155,48 @@ module.exports.showAll = (request, response) => {
 		});
 
 		response.send(sessionMap);
+	});
+};
+
+module.exports.pretend = (request, response) => {
+	if (process.env.NODE_ENV != 'dev') {
+		response.status(400).send({ error: 'This page is not accessible in production.' });
+	}
+
+	if (!request.cookies.sessionKey) {
+		response.status(401).send({ error: 'You must be logged in to view this page.' });
+	}
+
+	var dataPromises = [
+		Session.findOne({ key: request.cookies.sessionKey }).populate('user'),
+		User.findOne({ username: request.params.username })
+	];
+
+	Promise.all(dataPromises).then(function(values) {
+		var adminSession = values[0];
+		var user = values[1];
+
+		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
+			response.status(403).send({ error: 'You are not authorized to view this page.' });
+		}
+		else if (!user) {
+			response.status(404).send({ error: 'No user with that username exists.' });
+		}
+		else {
+			var session = new Session({
+				user: user._id,
+				key: Link.generateKey(32)
+			});
+
+			session.save((error) => {
+				if (error) {
+					response.status(500).send(error);
+				}
+				else {
+					response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
+					response.send(session);
+				}
+			});
+		}
 	});
 };
