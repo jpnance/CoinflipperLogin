@@ -3,7 +3,7 @@ ci:
 
 seed:
 	@echo "Use something like:"
-	@echo "docker exec -i login-mongo sh -c \"mongorestore --drop --archive\" < ~/backups/login/login.dump"
+	@echo "docker exec -i login-mongo sh -c \"mongorestore --drop --archive\" < ~/backups/login.dump"
 
 register:
 	@echo "Use something like:"
