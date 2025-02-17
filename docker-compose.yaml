@@ -3,7 +3,7 @@ version: '3.6'
 services:
     web:
         container_name: login-web
-        image: node:14-alpine
+        image: node:22-alpine
         volumes:
             - .:/app
             - ../ssl:/ssl
@@ -14,7 +14,7 @@ services:
 
     mongo:
         container_name: login-mongo
-        image: mongo:3.6.8
+        image: mongo:8.0.4
         volumes:
             - login-data:/data/db
 
