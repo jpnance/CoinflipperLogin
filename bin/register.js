@@ -6,7 +6,7 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || null;
 
-mongoose.connect(mongoUri, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoUri);
 
 const rl = readline.createInterface({
 	input: process.stdin,
