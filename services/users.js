@@ -46,19 +46,17 @@ module.exports.retrieve = (request, response) => {
 		response.status(400).send({ error: 'No email address provided.' });
 	}
 	else {
-		var user = User.findOne({ email: request.params.email }, (error, user) => {
-			if (error) {
-				response.status(500).send(error);
-				return;
-			}
-			else if (!user) {
+		var user = User.findOne({ email: request.params.email }).then((user) => {
+			if (!user) {
 				response.status(404).send({ message: 'No user found with that email address.' });
 				return;
 			}
 			else {
 				response.send(user);
 			}
-		})
+		}).catch((error) => {
+			response.status(500).send(error);
+		});
 	}
 };
 

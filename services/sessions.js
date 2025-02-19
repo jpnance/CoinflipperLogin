@@ -9,11 +9,8 @@ module.exports.create = (request, response) => {
 	else {
 		Link.findOne({
 			key: request.params.linkKey
-		}, (error, link) => {
-			if (error) {
-				response.status(400).send(error);
-			}
-			else if (!link) {
+		}).then((link) => {
+			if (!link) {
 				response.status(404).send({ error: 'No magic link found for that key. They expire after five minutes so you might need to request a new one.' });
 			}
 			else {
@@ -22,22 +19,21 @@ module.exports.create = (request, response) => {
 					key: Link.generateKey(32)
 				});
 
-				session.save((error) => {
-					if (error) {
-						response.status(500).send(error);
+				session.save().then(() => {
+					response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
+
+					if (link.redirectTo) {
+						response.redirect(link.redirectTo);
 					}
 					else {
-						response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
-
-						if (link.redirectTo) {
-							response.redirect(link.redirectTo);
-						}
-						else {
-							response.send(session);
-						}
+						response.send(session);
 					}
+				}).catch((error) => {
+					response.status(500).send(error);
 				});
 			}
+		}).catch((error) => {
+			response.status(400).send(error);
 		});
 	}
 };
@@ -49,11 +45,8 @@ module.exports.delete = (request, response) => {
 	else {
 		var sessionKey = request.params.key || request.cookies.sessionKey;
 
-		Session.deleteOne({ key: sessionKey }).exec((error, stats) => {
-			if (error) {
-				response.status(500).send(error);
-			}
-			else if (stats.deletedCount == 0) {
+		Session.deleteOne({ key: sessionKey }).then((stats) => {
+			if (stats.deletedCount == 0) {
 				response.status(404).send({ error: 'No session found for that key.' });
 			}
 			else {
@@ -67,6 +60,8 @@ module.exports.delete = (request, response) => {
 					response.status(200).send({});
 				}
 			}
+		}).catch((error) => {
+			response.status(500).send(error);
 		});
 	}
 };
@@ -78,31 +73,27 @@ module.exports.deleteAll = (request, response) => {
 	else {
 		var sessionKey = request.params.key || request.cookies.sessionKey;
 
-		Session.findOne({ key: sessionKey }).exec((error, session) => {
-			if (error) {
-				response.status(500).send(error);
-			}
-			else if (!session) {
+		Session.findOne({ key: sessionKey }).then((session) => {
+			if (!session) {
 				response.status(404).send({ error: 'No session found for that key.' });
 			}
 			else {
-				Session.deleteMany({ user: session.user }).exec((error, stats) => {
-					if (error) {
-						response.status(500).send(error);
+				Session.deleteMany({ user: session.user }).then((stats) => {
+					response.clearCookie('sessionKey');
+
+					if (request.headers.referer && request.headers.referer.startsWith('https://')) {
+						var sanitizedReferer = request.headers.referer.split('/').slice(0, 3).join('/');
+						response.redirect(sanitizedReferer);
 					}
 					else {
-						response.clearCookie('sessionKey');
-
-						if (request.headers.referer && request.headers.referer.startsWith('https://')) {
-							var sanitizedReferer = request.headers.referer.split('/').slice(0, 3).join('/');
-							response.redirect(sanitizedReferer);
-						}
-						else {
-							response.status(200).send({});
-						}
+						response.status(200).send({});
 					}
+				}).catch((error) => {
+					response.status(500).send(error);
 				});
 			}
+		}).catch((error) => {
+			response.status(500).send(error);
 		});
 	}
 };
@@ -112,16 +103,15 @@ module.exports.retrieve = (request, response) => {
 		response.status(400).send({ error: 'No session key provided.' });
 	}
 	else {
-		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').exec((error, session) => {
-			if (error) {
-				response.status(500).send(error);
-			}
-			else if (!session) {
+		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').then((session) => {
+			if (!session) {
 				response.status(404).send({ error: 'No session found for that key.' });
 			}
 			else {
 				response.send(session);
 			}
+		}).catch((error) => {
+			response.status(500).send(error);
 		});
 	}
 };

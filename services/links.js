@@ -8,11 +8,8 @@ module.exports.create = (request, response) => {
 	else {
 		User.findOne({
 			email: request.body.email.toLowerCase()
-		}, (error, user) => {
-			if (error) {
-				response.status(400).send(error);
-			}
-			else if (!user) {
+		}).then((user) => {
+			if (!user) {
 				response.status(404).send({ error: 'No user with that email address.' });
 			}
 			else {
@@ -25,11 +22,8 @@ module.exports.create = (request, response) => {
 					link.redirectTo = request.body.redirectTo;
 				}
 
-				link.save((error) => {
-					if (error) {
-						response.status(400).send(error);
-					}
-					else if (request.body.sendLoginLink) {
+				link.save().then(() => {
+					if (request.body.sendLoginLink) {
 						const nodemailer = require('nodemailer').createTransport({
 							host: 'smtp.gmail.com',
 							port: 465,
@@ -63,8 +57,12 @@ module.exports.create = (request, response) => {
 							redirectTo: link.redirectTo
 						});
 					}
+				}).catch((error) => {
+					response.status(400).send(error);
 				});
 			}
+		}).catch((error) => {
+			response.status(400).send(error);
 		});
 	}
 };
