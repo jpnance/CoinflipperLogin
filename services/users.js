@@ -25,13 +25,10 @@ module.exports.create = (request, response) => {
 			admin: false
 		});
 
-		user.save((error) => {
-			if (error) {
-				response.status(500).send(error);
-			}
-			else {
-				response.send(user);
-			}
+		user.save().then(() => {
+			response.status(200).send(user);
+		}).catch((error) => {
+			response.status(500).send(error);
 		});
 	}
 };
