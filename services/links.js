@@ -53,9 +53,7 @@ module.exports.create = (request, response) => {
 						});
 					}
 					else {
-						response.send({
-							redirectTo: link.redirectTo
-						});
+						response.send(link);
 					}
 				}).catch((error) => {
 					response.status(400).send(error);
