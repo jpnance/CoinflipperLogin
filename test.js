@@ -87,6 +87,16 @@ const askForMagicLink = (user) => {
 	return response.done;
 };
 
+const askForMagicLinkWithNoEmail = (user) => {
+	const request = mockRequest();
+
+	const response = mockResponse();
+
+	links.create(request, response);
+
+	return response.done;
+};
+
 const clickMagicLink = (link) => {
 	const request = mockRequest({
 		params: {
@@ -151,7 +161,19 @@ const expectInactiveSession = (session) => {
 	return Promise.resolve(session);
 };
 
+const expectNoLink = (link) => {
+	if (!link.error) {
+		return Promise.reject({
+			error: 'We didn\'t expect to get a valid magic link back but we did',
+			link: link
+		});
+	}
+
+	return Promise.resolve(link);
+};
+
 const disconnectAndExit = (data) => {
+	console.log();
 	mongoose.disconnect();
 };
 
@@ -160,14 +182,35 @@ const displayErrorAndExit = (error) => {
 	mongoose.disconnect();
 };
 
-resetDatabase
-	.then(createDefaultUser)
-	.then(askForMagicLink)
-	.then(clickMagicLink)
-	.then(retrieveSession)
-	.then(expectActiveSession)
-	.then(logOut)
-	.then(retrieveSession)
-	.then(expectInactiveSession)
-	.then(disconnectAndExit)
-	.catch(displayErrorAndExit);
+const print = (message) => {
+	return () => {
+		process.stdout.write(message);
+	};
+};
+
+const test = (testPromise) => {
+	return testPromise
+		.then(print('.'))
+		.catch(print('x'));
+};
+
+const testHappyPath =
+	resetDatabase
+		.then(createDefaultUser)
+		.then(askForMagicLink)
+		.then(clickMagicLink)
+		.then(retrieveSession)
+		.then(expectActiveSession)
+		.then(logOut)
+		.then(retrieveSession)
+		.then(expectInactiveSession);
+
+const testNoEmailProvided =
+	resetDatabase
+		.then(createDefaultUser)
+		.then(askForMagicLinkWithNoEmail)
+		.then(expectNoLink);
+
+test(testHappyPath)
+	.then(test(testNoEmailProvided))
+	.then(disconnectAndExit);
