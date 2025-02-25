@@ -97,7 +97,7 @@ const askForMagicLinkWithNoEmail = (user) => {
 	return response.done;
 };
 
-const askForMagicLinkWithNonsenseEmail = (user) => {
+const askForMagicLinkWithInvalidEmail = (user) => {
 	const request = mockRequest({
 		body: {
 			email: 'aoeu@aoeu.com'
@@ -228,7 +228,7 @@ const testNoEmailProvided =
 const testInvalidEmailProvided =
 	resetDatabase
 		.then(createDefaultUser)
-		.then(askForMagicLinkWithNonsenseEmail)
+		.then(askForMagicLinkWithInvalidEmail)
 		.then(expectNoLink);
 
 test(testHappyPath)
