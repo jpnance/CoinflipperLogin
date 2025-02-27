@@ -198,14 +198,14 @@ const displayErrorAndExit = (error) => {
 
 const print = (message) => {
 	return () => {
-		process.stdout.write(message);
+		console.log(message);
 	};
 };
 
-const test = (testPromise) => {
+const test = (testPromise, description) => {
 	return testPromise
-		.then(print('.'))
-		.catch(print('x'));
+		.then(print(`✓ ${description}`))
+		.catch(print(`× ${description}`));
 };
 
 const testHappyPath =
@@ -231,7 +231,8 @@ const testInvalidEmailProvided =
 		.then(askForMagicLinkWithInvalidEmail)
 		.then(expectNoLink);
 
-test(testHappyPath)
-	.then(test(testNoEmailProvided))
-	.then(test(testInvalidEmailProvided))
+test(testHappyPath, 'happy path works')
+	.then(test(testNoEmailProvided, 'no email'))
+	.then(test(testInvalidEmailProvided, 'invalid email'))
+	.then(resetDatabase)
 	.then(disconnectAndExit);
