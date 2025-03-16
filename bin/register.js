@@ -55,12 +55,10 @@ var nickNamePrompt = (user) => {
 
 		rl.close();
 
-		user.save((error) => {
-			if (error) {
-				console.error(error);
-			}
-
+		user.save().then(() => {
 			process.exit();
+		}).catch((error) => {
+			console.error(error);
 		});
 	});
 };
