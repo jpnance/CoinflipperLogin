@@ -65,7 +65,7 @@ module.exports.showAll = (request, response) => {
 
 	var dataPromises = [
 		Session.findOne({ key: request.cookies.sessionKey }).populate('user'),
-		User.find({}).populate('user')
+		User.find({})
 	];
 
 	Promise.all(dataPromises).then(function(values) {
