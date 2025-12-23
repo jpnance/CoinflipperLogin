@@ -151,10 +151,12 @@ module.exports.showAll = (request, response) => {
 module.exports.pretend = (request, response) => {
 	if (process.env.NODE_ENV != 'dev') {
 		response.status(400).send({ error: 'This page is not accessible in production.' });
+		return;
 	}
 
 	if (!request.cookies.sessionKey) {
 		response.status(401).send({ error: 'You must be logged in to view this page.' });
+		return;
 	}
 
 	var dataPromises = [
@@ -168,9 +170,11 @@ module.exports.pretend = (request, response) => {
 
 		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
 			response.status(403).send({ error: 'You are not authorized to view this page.' });
+			return;
 		}
 		else if (!user) {
 			response.status(404).send({ error: 'No user with that username exists.' });
+			return;
 		}
 		else {
 			var session = new Session({
@@ -178,14 +182,11 @@ module.exports.pretend = (request, response) => {
 				key: Link.generateKey(32)
 			});
 
-			session.save((error) => {
-				if (error) {
-					response.status(500).send(error);
-				}
-				else {
-					response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
-					response.send(session);
-				}
+			session.save().then(() => {
+				response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
+				response.send(session);
+			}).catch((error) => {
+				response.status(500).send(error);
 			});
 		}
 	});
