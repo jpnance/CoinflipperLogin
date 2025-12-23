@@ -1,27 +1,27 @@
 version: '3.6'
 
 services:
-    web:
-        container_name: login-web
-        image: node:22-alpine
-        volumes:
-            - .:/app
-            - ../ssl:/ssl
-        working_dir: /app
-        ports:
-            - $PORT:$PORT
-        command: node index.js
+  web:
+    container_name: login-web
+    image: node:22-alpine
+    volumes:
+      - .:/app
+      - ../ssl:/ssl
+    working_dir: /app
+    ports:
+      - $PORT:$PORT
+    command: node index.js
 
-    mongo:
-        container_name: login-mongo
-        image: mongo:8.0.4
-        volumes:
-            - login-data:/data/db
+  mongo:
+    container_name: login-mongo
+    image: mongo:8.0.4
+    volumes:
+      - login-data:/data/db
 
 volumes:
-    login-data:
-        name: login-data
+  login-data:
+    name: login-data
 
 networks:
-    default:
-        name: coinflipper
+  default:
+    name: coinflipper
