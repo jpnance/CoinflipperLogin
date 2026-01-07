@@ -5,6 +5,7 @@ const linkSchema = new Schema({
 	key: { type: String, required: true, unique: true },
 	user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	redirectTo: { type: String },
+	tokenCallbackUrl: { type: String },
 	createdAt: { type: Date, default: Date.now, expires: 300 }
 });
 

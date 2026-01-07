@@ -22,6 +22,10 @@ module.exports.create = (request, response) => {
 					link.redirectTo = request.body.redirectTo;
 				}
 
+				if (request.body.tokenCallbackUrl) {
+					link.tokenCallbackUrl = request.body.tokenCallbackUrl;
+				}
+
 				link.save().then(() => {
 					if (request.body.sendLoginLink) {
 						const nodemailer = require('nodemailer').createTransport({

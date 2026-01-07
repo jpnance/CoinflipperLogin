@@ -22,7 +22,20 @@ module.exports.create = (request, response) => {
 				session.save().then(() => {
 					response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
 
-					if (link.redirectTo) {
+					if (link.tokenCallbackUrl) {
+						const tokenCallbackUrl = new URL(link.tokenCallbackUrl);
+
+						const params = { token: session.key };
+
+						if (link.redirectTo) {
+							params.redirectTo = link.redirectTo;
+						}
+
+						tokenCallbackUrl.search = new URLSearchParams(params);
+
+						response.redirect(tokenCallbackUrl.toString());
+					}
+					else if (link.redirectTo) {
 						response.redirect(link.redirectTo);
 					}
 					else {
