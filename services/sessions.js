@@ -20,8 +20,6 @@ module.exports.create = (request, response) => {
 				});
 
 				session.save().then(() => {
-					response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
-
 					if (link.tokenCallbackUrl) {
 						const tokenCallbackUrl = new URL(link.tokenCallbackUrl);
 
@@ -35,11 +33,14 @@ module.exports.create = (request, response) => {
 
 						response.redirect(tokenCallbackUrl.toString());
 					}
-					else if (link.redirectTo) {
-						response.redirect(link.redirectTo);
-					}
 					else {
-						response.send(session);
+						response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
+						if (link.redirectTo) {
+							response.redirect(link.redirectTo);
+						}
+						else {
+							response.send(session);
+						}
 					}
 				}).catch((error) => {
 					response.status(500).send(error);
