@@ -36,15 +36,10 @@ const mongoUri = process.env.MONGODB_URI || null;
 
 mongoose.connect(mongoUri);
 
-const users = require('./services/users');
 const links = require('./services/links');
 const sessions = require('./services/sessions');
 
-// API routes (existing)
-app.get('/users', users.showAll);
-app.post('/users/create', users.create);
-app.get('/users/retrieve/:email', users.retrieve);
-
+// API routes
 app.post('/links/create', links.create);
 
 app.get('/sessions', sessions.showAll);
