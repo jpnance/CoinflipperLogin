@@ -106,16 +106,16 @@ module.exports = function(app) {
 				return;
 			}
 
-			const user = new User({
-				email: req.body.email.toLowerCase(),
-				username: req.body.username,
-				name: {
-					first: req.body.firstName,
-					last: req.body.lastName,
-					nick: req.body.nickName || req.body.firstName
-				},
-				admin: req.body.admin === 'on'
-			});
+		const user = new User({
+			email: req.body.email.toLowerCase(),
+			username: User.generateUsername(req.body.firstName, req.body.lastName),
+			name: {
+				first: req.body.firstName,
+				last: req.body.lastName,
+				nick: req.body.nickName || req.body.firstName
+			},
+			admin: req.body.admin === 'on'
+		});
 
 			await user.save();
 			res.redirect('/admin/users');

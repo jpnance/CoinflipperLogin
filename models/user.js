@@ -17,4 +17,8 @@ userSchema.statics.validateEmail = (email) => {
 	return email.match(emailRegex) != null;
 };
 
+userSchema.statics.generateUsername = (firstName, lastName) => {
+	return [firstName, lastName].join('-').toLowerCase().replaceAll(/[']/g, '').replaceAll(/\s+/g, '-');
+};
+
 module.exports = mongoose.model('User', userSchema);
