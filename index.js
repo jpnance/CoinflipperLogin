@@ -8,9 +8,18 @@ const port = process.env.PORT || 3000;
 
 const allowedDomains = process.env.ALLOWED_DOMAINS.split(/,/);
 
+// Static files
+app.use(express.static(__dirname + '/public'));
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// View engine
+app.set('view engine', 'pug');
 
 const allowCoinflipperSites = (request, response, next) => {
 	if (allowedDomains.includes(request.headers.origin)) {
@@ -31,10 +40,7 @@ const users = require('./services/users');
 const links = require('./services/links');
 const sessions = require('./services/sessions');
 
-app.get('/', (request, response) => {
-	response.send('Hello, world!');
-});
-
+// API routes (existing)
 app.get('/users', users.showAll);
 app.post('/users/create', users.create);
 app.get('/users/retrieve/:email', users.retrieve);
@@ -49,6 +55,9 @@ app.get('/sessions/delete/:key', sessions.delete);
 app.get('/sessions/deleteAll', sessions.deleteAll);
 app.get('/sessions/deleteAll/:key', sessions.deleteAll);
 app.get('/sessions/pretend/:username', sessions.pretend);
+
+// Web UI routes
+require('./routes')(app);
 
 if (process.env.NODE_ENV == 'dev') {
 	const fs = require('fs');

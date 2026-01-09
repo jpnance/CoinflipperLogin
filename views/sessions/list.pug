@@ -1,0 +1,81 @@
+extends ../layout.pug
+
+block title
+	+title('Sessions')
+
+block content
+	div.page-header
+		h1 Session Statistics
+
+	div.row.mb-4
+		div.col-md-4
+			div.stats-card
+				h3 #{totalSessions}
+				p Total Sessions
+		div.col-md-4
+			div.stats-card
+				h3 #{totalUsers}
+				p Users with Sessions
+		div.col-md-4
+			div.stats-card
+				h3 #{oldSessions}
+				p Inactive (30+ days)
+
+	div.card.mb-4
+		div.card-header.d-flex.justify-content-between.align-items-center
+			span Sessions by User
+			if oldSessions > 0
+				form(action='/admin/sessions/cleanup' method='POST' style='display:inline')
+					button.btn.btn-sm.btn-danger(type='submit' onclick='return confirm("Delete all sessions older than 30 days?")') Clean Up Old Sessions
+		div.card-body.p-0
+			div.table-responsive
+				table.table.table-hover.mb-0
+					thead
+						tr
+							th User
+							th Sessions
+							th Last Activity
+							th Actions
+					tbody
+						each userData, username in sessionMap
+							tr.session-row
+								td #{username}
+								td #{userData.count}
+								td
+									if userData.lastActivity
+										| #{userData.lastActivity.toLocaleDateString()} #{userData.lastActivity.toLocaleTimeString()}
+									else
+										span.text-muted Never
+								td
+									form(action='/admin/sessions/delete-user/' + username method='POST' style='display:inline')
+										button.btn.btn-sm.btn-outline-secondary(type='submit' onclick='return confirm("Delete all sessions for ' + username + '?")') Delete All
+
+	div.card
+		div.card-header All Sessions
+		div.card-body.p-0
+			div.table-responsive
+				table.table.table-hover.mb-0
+					thead
+						tr
+							th User
+							th Session Key (truncated)
+							th Last Activity
+							th Actions
+					tbody
+						each session in sessions
+							tr.session-row
+								td
+									if session.user
+										| #{session.user.username}
+									else
+										span.text-muted Unknown
+								td
+									code #{session.key.substring(0, 8)}...
+								td
+									if session.lastActivity
+										| #{session.lastActivity.toLocaleDateString()} #{session.lastActivity.toLocaleTimeString()}
+									else
+										span.text-muted Never
+								td
+									form(action='/admin/sessions/delete/' + session.key method='POST' style='display:inline')
+										button.btn.btn-sm.btn-outline-secondary(type='submit') Delete

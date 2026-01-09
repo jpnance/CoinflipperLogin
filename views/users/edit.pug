@@ -1,0 +1,44 @@
+extends ../layout.pug
+
+block title
+	+title('Edit User')
+
+block content
+	div.page-header
+		h1 Edit User
+
+	div.row
+		div.col-12.col-md-8.col-lg-6
+			if error
+				div.alert.alert-danger(role='alert') #{error.message}
+
+			if success
+				div.alert.alert-success(role='alert') #{success.message}
+
+			form(action='/admin/users/edit/' + user._id method='POST')
+				div.form-group
+					label(for='email') Email Address
+					input.form-control(type='email' id='email' name='email' value=user.email required)
+
+				div.form-group
+					label(for='username') Username
+					input.form-control(type='text' id='username' name='username' value=user.username required)
+
+				div.form-group
+					label(for='firstName') First Name
+					input.form-control(type='text' id='firstName' name='firstName' value=user.name.first required)
+
+				div.form-group
+					label(for='lastName') Last Name
+					input.form-control(type='text' id='lastName' name='lastName' value=user.name.last required)
+
+				div.form-group
+					label(for='nickName') Nickname
+					input.form-control(type='text' id='nickName' name='nickName' value=user.name.nick)
+
+				div.form-check.pb-3
+					input.form-check-input(type='checkbox' id='admin' name='admin' checked=user.admin ? 'checked' : null)
+					label.form-check-label(for='admin') Administrator
+
+				button.btn.btn-primary(type='submit') Save Changes
+				a.btn.btn-outline-secondary.ml-2(href='/admin/users') Cancel

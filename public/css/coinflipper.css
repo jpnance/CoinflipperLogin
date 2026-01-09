@@ -1,0 +1,60 @@
+img.logo {
+	border-radius: 4px;
+	height: 30px;
+	width: 26px;
+}
+
+.welcome-card {
+	max-width: 400px;
+	margin: 80px auto;
+}
+
+.welcome-card .card-body {
+	padding: 2.5rem;
+}
+
+.welcome-card h2 {
+	margin-bottom: 1.5rem;
+}
+
+.stats-card {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.25rem;
+	padding: 1.5rem;
+	text-align: center;
+	margin-bottom: 1rem;
+}
+
+.stats-card h3 {
+	color: #007bff;
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.stats-card p {
+	color: #6c757d;
+	margin-bottom: 0;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 0.85rem;
+}
+
+.badge-admin {
+	background: #007bff;
+	color: #fff;
+}
+
+.session-row {
+	transition: background-color 0.2s;
+}
+
+.page-header {
+	border-bottom: 1px solid #dee2e6;
+	margin-bottom: 1.5rem;
+	padding-bottom: 0.75rem;
+}
+
+.bg-light-gray {
+	background-color: #e6e6e6 !important;
+}
