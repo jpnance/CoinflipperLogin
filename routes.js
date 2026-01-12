@@ -173,8 +173,12 @@ module.exports = function(app) {
 		const thirtyDaysAgo = new Date();
 		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+		const yearAgo = new Date();
+		yearAgo.setDate(yearAgo.getDate() - 365);
+
 		const sessionMap = {};
 		let oldSessionCount = 0;
+		let veryOldSessionCount = 0;
 
 		allSessions.forEach(s => {
 			if (!s.user) return;
@@ -197,6 +201,9 @@ module.exports = function(app) {
 			if (!s.lastActivity || s.lastActivity < thirtyDaysAgo) {
 				oldSessionCount++;
 			}
+			if (!s.lastActivity || s.lastActivity < yearAgo) {
+				veryOldSessionCount++;
+			}
 		});
 
 		const uniqueUsers = Object.keys(sessionMap).length;
@@ -207,7 +214,8 @@ module.exports = function(app) {
 			sessionMap: sessionMap,
 			totalSessions: allSessions.length,
 			totalUsers: uniqueUsers,
-			oldSessions: oldSessionCount
+			oldSessions: oldSessionCount,
+			veryOldSessions: veryOldSessionCount
 		});
 	});
 
