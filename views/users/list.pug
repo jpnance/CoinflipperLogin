@@ -30,3 +30,5 @@ block content
 								span.badge.badge-admin Admin
 						td
 							a.btn.btn-sm.btn-outline-secondary(href='/admin/users/edit/' + user._id) Edit
+							form.d-inline.ml-1(action='/admin/pretend/' + user.username method='POST')
+								button.btn.btn-sm.btn-outline-info(type='submit') Pretend

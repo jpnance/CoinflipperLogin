@@ -1,0 +1,48 @@
+extends ../layout.pug
+
+block title
+	+title('Sessions for ' + targetUser.username)
+
+block content
+	div.page-header.d-flex.justify-content-between.align-items-center
+		h1 Sessions for #{targetUser.name.nick}
+			small.text-muted.ml-2 (#{targetUser.username})
+		a.btn.btn-outline-secondary(href='/admin/sessions') Back to All Sessions
+
+	if userSessions.length === 0
+		div.alert.alert-info No sessions found for this user.
+	else
+		div.card
+			div.card-header
+				| #{userSessions.length} session#{userSessions.length > 1 ? 's' : ''}
+			div.card-body.p-0
+				div.table-responsive
+					table.table.table-hover.mb-0
+						thead
+							tr
+								th Session
+								th Last Activity
+								th Actions
+						tbody
+							each s in userSessions
+								tr
+									td
+										code #{s.key.substring(0, 8)}
+										if s._id.equals(session._id)
+											span.badge.badge-info.ml-2 Current
+										if s.pretendingToBe
+											span.badge.badge-warning.ml-2 Pretending
+									td
+										if s.lastActivity
+											| #{s.lastActivity.toLocaleDateString()} #{s.lastActivity.toLocaleTimeString()}
+										else
+											span.text-muted Never
+									td.text-nowrap
+										form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+											select.form-control.form-control-sm.d-inline-block.mr-1(name='username' style='width: auto;')
+												option(value='') None
+												each u in allUsers
+													option(value=u.username selected=(s.pretendingToBe && s.pretendingToBe.username === u.username)) #{u.name.nick} (#{u.username})
+											button.btn.btn-sm.btn-outline-primary(type='submit') Pretend
+										form.d-inline.ml-3(action='/admin/sessions/delete/' + s.key method='POST')
+											button.btn.btn-sm.btn-outline-danger(type='submit' onclick='return confirm("Delete this session entirely?")') Delete Session

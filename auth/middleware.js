@@ -15,11 +15,19 @@ async function attachSession(req, res, next) {
 	}
 
 	try {
-		var session = await Session.findOne({ key: sessionKey }).populate('user');
+		var session = await Session.findOne({ key: sessionKey }).populate('user').populate('pretendingToBe');
 
 		if (session && session.user) {
 			req.session = session;
 			req.user = session.user;
+
+			// For admins, find all their sessions that are pretending
+			if (session.user.admin) {
+				res.locals.pretendingSessions = await Session.find({
+					user: session.user._id,
+					pretendingToBe: { $ne: null }
+				}).populate('pretendingToBe');
+			}
 		}
 	} catch (error) {
 		// Invalid/expired session - just continue as logged out

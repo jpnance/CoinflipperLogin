@@ -117,12 +117,20 @@ module.exports.retrieve = (request, response) => {
 		response.status(400).send({ error: 'No session key provided.' });
 	}
 	else {
-		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').then((session) => {
+		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').populate('pretendingToBe').then((session) => {
 			if (!session) {
 				response.status(404).send({ error: 'No session found for that key.' });
 			}
 			else {
-				response.send(session);
+				// If pretending to be someone, return that user instead
+				if (session.pretendingToBe) {
+					var pretendSession = session.toObject();
+					pretendSession.user = session.pretendingToBe;
+					response.send(pretendSession);
+				}
+				else {
+					response.send(session);
+				}
 			}
 		}).catch((error) => {
 			response.status(500).send(error);
@@ -162,46 +170,3 @@ module.exports.showAll = (request, response) => {
 	});
 };
 
-module.exports.pretend = (request, response) => {
-	if (process.env.NODE_ENV != 'dev') {
-		response.status(400).send({ error: 'This page is not accessible in production.' });
-		return;
-	}
-
-	if (!request.cookies.sessionKey) {
-		response.status(401).send({ error: 'You must be logged in to view this page.' });
-		return;
-	}
-
-	var dataPromises = [
-		Session.findOne({ key: request.cookies.sessionKey }).populate('user'),
-		User.findOne({ username: request.params.username })
-	];
-
-	Promise.all(dataPromises).then(function(values) {
-		var adminSession = values[0];
-		var user = values[1];
-
-		if (!adminSession || !adminSession.user || !adminSession.user.admin) {
-			response.status(403).send({ error: 'You are not authorized to view this page.' });
-			return;
-		}
-		else if (!user) {
-			response.status(404).send({ error: 'No user with that username exists.' });
-			return;
-		}
-		else {
-			var session = new Session({
-				user: user._id,
-				key: Link.generateKey(32)
-			});
-
-			session.save().then(() => {
-				response.cookie('sessionKey', session.key, { domain: process.env.COOKIE_DOMAIN, expires: new Date('2038-01-01'), secure: true, httpOnly: true })
-				response.send(session);
-			}).catch((error) => {
-				response.status(500).send(error);
-			});
-		}
-	});
-};

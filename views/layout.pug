@@ -57,5 +57,28 @@ html(lang='en' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml')
 							li.nav-item.py-1
 								a.nav-link(href=navItem.href target=navItem.target || '_self') #{navItem.name}
 
+		if pretendingSessions && pretendingSessions.length > 0
+			div.alert.alert-warning.mb-0.rounded-0
+				div.container
+					div.d-flex.justify-content-between.align-items-center
+						div
+							strong ⚠ Pretend Mode Active
+							ul.mb-0.mt-1
+								each ps in pretendingSessions
+									if ps._id.equals(session._id)
+										li.mb-1
+											strong This session
+											|  is pretending to be #[strong #{ps.pretendingToBe.name.nick}] (#{ps.pretendingToBe.username})
+											form.d-inline.ml-2(action='/admin/sessions/' + ps.key + '/pretend' method='POST')
+												button.btn.btn-xs.btn-outline-dark(type='submit' style='font-size: 0.75rem; padding: 0.1rem 0.4rem;') Stop
+								each ps in pretendingSessions
+									if !ps._id.equals(session._id)
+										li.mb-1
+											| Another session is pretending to be #[strong #{ps.pretendingToBe.name.nick}] (#{ps.pretendingToBe.username})
+											form.d-inline.ml-2(action='/admin/sessions/' + ps.key + '/pretend' method='POST')
+												button.btn.btn-xs.btn-outline-dark(type='submit' style='font-size: 0.75rem; padding: 0.1rem 0.4rem;') Stop
+						div
+							a.btn.btn-sm.btn-outline-secondary(href='/admin/sessions/' + session.user.username) Manage Sessions
+
 		div.container.pb-3
 			block content

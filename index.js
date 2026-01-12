@@ -49,7 +49,6 @@ app.get('/sessions/delete', sessions.delete);
 app.get('/sessions/delete/:key', sessions.delete);
 app.get('/sessions/deleteAll', sessions.deleteAll);
 app.get('/sessions/deleteAll/:key', sessions.deleteAll);
-app.get('/sessions/pretend/:username', sessions.pretend);
 
 // Web UI routes
 require('./routes')(app);

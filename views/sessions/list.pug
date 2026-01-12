@@ -39,7 +39,8 @@ block content
 					tbody
 						each userData, username in sessionMap
 							tr.session-row
-								td #{username}
+								td
+									a(href='/admin/sessions/' + username) #{username}
 								td #{userData.count}
 								td
 									if userData.lastActivity
@@ -49,33 +50,3 @@ block content
 								td
 									form(action='/admin/sessions/delete-user/' + username method='POST' style='display:inline')
 										button.btn.btn-sm.btn-outline-secondary(type='submit' onclick='return confirm("Delete all sessions for ' + username + '?")') Delete All
-
-	div.card
-		div.card-header All Sessions
-		div.card-body.p-0
-			div.table-responsive
-				table.table.table-hover.mb-0
-					thead
-						tr
-							th User
-							th Session Key (truncated)
-							th Last Activity
-							th Actions
-					tbody
-						each session in sessions
-							tr.session-row
-								td
-									if session.user
-										| #{session.user.username}
-									else
-										span.text-muted Unknown
-								td
-									code #{session.key.substring(0, 8)}...
-								td
-									if session.lastActivity
-										| #{session.lastActivity.toLocaleDateString()} #{session.lastActivity.toLocaleTimeString()}
-									else
-										span.text-muted Never
-								td
-									form(action='/admin/sessions/delete/' + session.key method='POST' style='display:inline')
-										button.btn.btn-sm.btn-outline-secondary(type='submit') Delete

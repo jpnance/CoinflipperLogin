@@ -211,6 +211,58 @@ module.exports = function(app) {
 		});
 	});
 
+	// Admin: View sessions for a specific user
+	app.get('/admin/sessions/:username', requireLogin, requireAdmin, async (req, res) => {
+		const user = await User.findOne({ username: req.params.username });
+
+		if (!user) {
+			res.redirect('/admin/sessions');
+			return;
+		}
+
+		const userSessions = await Session.find({ user: user._id })
+			.populate('pretendingToBe')
+			.sort({ lastActivity: -1 });
+
+		// Get all users for the pretend dropdown
+		const allUsers = await User.find({}).sort({ username: 1 });
+
+		res.render('sessions/user', {
+			session: req.session,
+			targetUser: user,
+			userSessions: userSessions,
+			allUsers: allUsers
+		});
+	});
+
+	// Admin: Set pretend on a specific session
+	app.post('/admin/sessions/:key/pretend', requireLogin, requireAdmin, async (req, res) => {
+		try {
+			const targetSession = await Session.findOne({ key: req.params.key }).populate('user');
+
+			if (!targetSession) {
+				res.redirect('/admin/sessions');
+				return;
+			}
+
+			if (req.body.username) {
+				const pretendUser = await User.findOne({ username: req.body.username });
+				if (pretendUser) {
+					targetSession.pretendingToBe = pretendUser._id;
+				}
+			} else {
+				targetSession.pretendingToBe = undefined;
+			}
+
+			await targetSession.save();
+
+			res.redirect('/admin/sessions/' + targetSession.user.username);
+		} catch (error) {
+			console.error(error);
+			res.redirect('/admin/sessions');
+		}
+	});
+
 	// Admin: Delete single session
 	app.post('/admin/sessions/delete/:key', requireLogin, requireAdmin, async (req, res) => {
 		await Session.deleteOne({ key: req.params.key });
@@ -226,6 +278,39 @@ module.exports = function(app) {
 		}
 
 		res.redirect('/admin/sessions');
+	});
+
+	// Admin: Stop pretending (must be before :username route)
+	app.post('/admin/pretend/stop', requireLogin, requireAdmin, async (req, res) => {
+		try {
+			req.session.pretendingToBe = undefined;
+			await req.session.save();
+
+			res.redirect('/');
+		} catch (error) {
+			console.error(error);
+			res.redirect('/?error=unknown');
+		}
+	});
+
+	// Admin: Pretend to be a user
+	app.post('/admin/pretend/:username', requireLogin, requireAdmin, async (req, res) => {
+		try {
+			const targetUser = await User.findOne({ username: req.params.username });
+
+			if (!targetUser) {
+				res.redirect('/admin/users?error=user-not-found');
+				return;
+			}
+
+			req.session.pretendingToBe = targetUser._id;
+			await req.session.save();
+
+			res.redirect('/');
+		} catch (error) {
+			console.error(error);
+			res.redirect('/admin/users?error=unknown');
+		}
 	});
 
 	// Admin: Cleanup old sessions
