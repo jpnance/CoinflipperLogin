@@ -262,7 +262,8 @@ module.exports = function(app) {
 
 			await targetSession.save();
 
-			res.redirect('/admin/sessions/' + targetSession.user.username);
+			const redirectTo = req.body.redirectTo || '/admin/sessions/' + targetSession.user.username;
+			res.redirect(redirectTo);
 		} catch (error) {
 			console.error(error);
 			res.redirect('/admin/sessions');
