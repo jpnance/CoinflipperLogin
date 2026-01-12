@@ -7,20 +7,38 @@ block content
 	div.welcome-card.card
 		div.card-body.text-center
 			img.mb-4(src='/images/logo.png' height='100')
-			h2 Welcome to Coinflipper
-			p.text-muted.mb-4 Enter your email address to receive a magic login link.
 
-			if success
-				div.alert.alert-success(role='alert') #{success.message}
+			if session
+				-
+					var pretendUser = null;
+					if (pretendingSessions) {
+						for (var i = 0; i < pretendingSessions.length; i++) {
+							if (pretendingSessions[i]._id.equals(session._id)) {
+								pretendUser = pretendingSessions[i].pretendingToBe;
+								break;
+							}
+						}
+					}
+				if pretendUser
+					h2 Hey, "#{pretendUser.name.nick}"!
+				else
+					h2 Hey, #{session.user.name.nick}!
+				p.text-muted.mb-4 You're logged in and ready to go.
 			else
-				if error
-					div.alert.alert-danger(role='alert') #{error.message}
+				h2 Welcome to Coinflipper
+				p.text-muted.mb-4 Enter your email address to receive a magic login link.
 
-			form(action='/login' method='POST')
-				div.form-group
-					input.form-control.text-center(type='email' id='email' name='email' placeholder='you@example.com' required)
+				if success
+					div.alert.alert-success(role='alert') #{success.message}
+				else
+					if error
+						div.alert.alert-danger(role='alert') #{error.message}
 
-				input(type='hidden' name='sendLoginLink' value='true')
-				input(type='hidden' name='redirectTo' value=process.env.LOGIN_SERVICE)
+				form(action='/login' method='POST')
+					div.form-group
+						input.form-control.text-center(type='email' id='email' name='email' placeholder='you@example.com' required)
 
-				button.btn.btn-primary.btn-block(type='submit') Send Me a Login Link
+					input(type='hidden' name='sendLoginLink' value='true')
+					input(type='hidden' name='redirectTo' value=process.env.LOGIN_SERVICE)
+
+					button.btn.btn-primary.btn-block(type='submit') Send Me a Login Link

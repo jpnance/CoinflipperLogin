@@ -20,6 +20,7 @@ async function attachSession(req, res, next) {
 		if (session && session.user) {
 			req.session = session;
 			req.user = session.user;
+			res.locals.session = session;
 
 			// For admins, find all their sessions that are pretending
 			if (session.user.admin) {
