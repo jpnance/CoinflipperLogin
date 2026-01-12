@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const sessionSchema = new Schema({
 	user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	key: { type: String, required: true, unique: true },
-	lastActivity: { type: Date },
+	lastActivity: { type: Date, default: Date.now },
 	pretendingToBe: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
