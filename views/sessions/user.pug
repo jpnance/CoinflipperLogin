@@ -34,19 +34,16 @@ block content
 							form.d-inline(action='/admin/sessions/delete/' + s.key method='POST')
 								button.btn.btn-sm.btn-outline-danger(type='submit' onclick='return confirm("Delete this session entirely?")') Delete
 
-					if session.user.admin && targetUser._id.equals(session.user._id)
-						hr.my-3
-
-						div.row.align-items-center
-							div.col-12.col-md-auto.mb-2.mb-md-0
-								span Pretend to be:
-							div.col-12.col-md-auto
-								form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
-									select.form-control.form-control-sm.d-inline-block.mr-2(name='username' style='width: auto;')
-										option(value='') None
-										each u in allUsers
-											option(value=u.username selected=(s.pretendingToBe && s.pretendingToBe.username === u.username)) #{u.name.nick} (#{u.username})
-									button.btn.btn-sm.btn-outline-primary(type='submit') Pretend
-								if s.pretendingToBe
-									form.d-inline.ml-2(action='/admin/sessions/' + s.key + '/pretend' method='POST')
-										button.btn.btn-sm.btn-outline-secondary(type='submit') Stop Pretending
+				if session.user.admin && targetUser._id.equals(session.user._id)
+					if s.pretendingToBe
+						div.card-footer.alert-warning.mb-0.rounded-0.border-top
+							| Pretending to be #[strong #{s.pretendingToBe.name.first} #{s.pretendingToBe.name.last}] (#{s.pretendingToBe.username}).
+							form.d-inline.ml-2(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+								button.btn.btn-sm.btn-outline-dark(type='submit') Stop
+					else
+						div.card-footer
+							form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+								select.form-control.form-control-sm.d-inline.mr-2(name='username' style='width: auto;')
+									each u in allUsers
+										option(value=u.username) #{u.name.first} #{u.name.last} (#{u.username})
+								button.btn.btn-sm.btn-outline-primary(type='submit') Pretend to Be
