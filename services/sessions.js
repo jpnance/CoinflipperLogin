@@ -11,7 +11,13 @@ module.exports.create = (request, response) => {
 			key: request.params.linkKey
 		}).then((link) => {
 			if (!link) {
-				response.status(404).send({ error: 'No magic link found for that key. They expire after five minutes so you might need to request a new one.' });
+				if (request.session) {
+					// Already logged in, no need to show an error
+					response.redirect('/');
+				}
+				else {
+					response.status(404).render('sessions/expired');
+				}
 			}
 			else {
 				var session = new Session({
