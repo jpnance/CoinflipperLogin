@@ -235,13 +235,19 @@ module.exports = function(app) {
 		});
 	});
 
-	// Admin: Set pretend on a specific session
+	// Admin: Set pretend on a specific session (only your own sessions)
 	app.post('/admin/sessions/:key/pretend', requireLogin, requireAdmin, async (req, res) => {
 		try {
 			const targetSession = await Session.findOne({ key: req.params.key }).populate('user');
 
 			if (!targetSession) {
 				res.redirect('/admin/sessions');
+				return;
+			}
+
+			// Only allow setting pretend on your own sessions
+			if (!targetSession.user._id.equals(req.user._id)) {
+				res.status(403).send('Forbidden');
 				return;
 			}
 

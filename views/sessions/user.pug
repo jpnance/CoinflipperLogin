@@ -12,37 +12,41 @@ block content
 	if userSessions.length === 0
 		div.alert.alert-info No sessions found for this user.
 	else
-		div.card
-			div.card-header
-				| #{userSessions.length} session#{userSessions.length > 1 ? 's' : ''}
-			div.card-body.p-0
-				div.table-responsive
-					table.table.table-hover.mb-0
-						thead
-							tr
-								th Session
-								th Last Activity
-								th Actions
-						tbody
-							each s in userSessions
-								tr
-									td
-										code #{s.key.substring(0, 8)}
-										if s._id.equals(session._id)
-											span.badge.badge-info.ml-2 Current
-										if s.pretendingToBe
-											span.badge.badge-warning.ml-2 Pretending
-									td
-										if s.lastActivity
-											| #{s.lastActivity.toLocaleDateString()} #{s.lastActivity.toLocaleTimeString()}
-										else
-											span.text-muted Never
-									td.text-nowrap
-										form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
-											select.form-control.form-control-sm.d-inline-block.mr-1(name='username' style='width: auto;')
-												option(value='') None
-												each u in allUsers
-													option(value=u.username selected=(s.pretendingToBe && s.pretendingToBe.username === u.username)) #{u.name.nick} (#{u.username})
-											button.btn.btn-sm.btn-outline-primary(type='submit') Pretend
-										form.d-inline.ml-3(action='/admin/sessions/delete/' + s.key method='POST')
-											button.btn.btn-sm.btn-outline-danger(type='submit' onclick='return confirm("Delete this session entirely?")') Delete Session
+		p.text-muted #{userSessions.length} session#{userSessions.length > 1 ? 's' : ''}
+
+		each s in userSessions
+			div.card.mb-3
+				div.card-body
+					div.row
+						div.col-12.col-md-8.mb-2.mb-md-0
+							div
+								code.mr-2 #{s.key.substring(0, 8)}
+								if s._id.equals(session._id)
+									span.badge.badge-info Current
+								if s.pretendingToBe
+									span.badge.badge-warning.ml-1 Pretending
+							small.text-muted
+								if s.lastActivity
+									| Last active #{s.lastActivity.toLocaleDateString()} #{s.lastActivity.toLocaleTimeString()}
+								else
+									| Never active
+						div.col-12.col-md-4.text-md-right
+							form.d-inline(action='/admin/sessions/delete/' + s.key method='POST')
+								button.btn.btn-sm.btn-outline-danger(type='submit' onclick='return confirm("Delete this session entirely?")') Delete
+
+					if session.user.admin && targetUser._id.equals(session.user._id)
+						hr.my-3
+
+						div.row.align-items-center
+							div.col-12.col-md-auto.mb-2.mb-md-0
+								span Pretend to be:
+							div.col-12.col-md-auto
+								form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+									select.form-control.form-control-sm.d-inline-block.mr-2(name='username' style='width: auto;')
+										option(value='') None
+										each u in allUsers
+											option(value=u.username selected=(s.pretendingToBe && s.pretendingToBe.username === u.username)) #{u.name.nick} (#{u.username})
+									button.btn.btn-sm.btn-outline-primary(type='submit') Pretend
+								if s.pretendingToBe
+									form.d-inline.ml-2(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+										button.btn.btn-sm.btn-outline-secondary(type='submit') Stop Pretending
