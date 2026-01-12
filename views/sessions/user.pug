@@ -42,8 +42,11 @@ block content
 								button.btn.btn-sm.btn-outline-dark(type='submit') Stop
 					else
 						div.card-footer
-							form.d-inline(action='/admin/sessions/' + s.key + '/pretend' method='POST')
-								select.form-control.form-control-sm.d-inline.mr-2(name='username' style='width: auto;')
-									each u in allUsers
-										option(value=u.username) #{u.name.first} #{u.name.last} (#{u.username})
-								button.btn.btn-sm.btn-outline-primary(type='submit') Pretend to Be
+							form(action='/admin/sessions/' + s.key + '/pretend' method='POST')
+								div.row.align-items-center
+									div.col-12.col-md-auto.mb-2.mb-md-0
+										select.form-control.form-control-sm(name='username')
+											each u in allUsers
+												option(value=u.username) #{u.name.first} #{u.name.last} (#{u.username})
+									div.col-12.col-md-auto
+										button.btn.btn-sm.btn-outline-primary.btn-block.btn-md-inline(type='submit') Pretend to Be
