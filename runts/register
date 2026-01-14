@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [ -z "$1" ] || [ -z "$2" ]; then
-	echo "Usage: runt register <email address> <username>"
-else
-	docker exec -i login-web sh -c "cd /app/bin && node register.js $1 $2"
-fi
