@@ -8,19 +8,23 @@ block content
 		h1 Session Statistics
 
 	div.row.mb-4
-		div.col-md-3
+		div.col-md
 			div.stats-card
 				h3 #{totalSessions}
 				p Total Sessions
-		div.col-md-3
+		div.col-md
 			div.stats-card
 				h3 #{totalUsers}
 				p Users with Sessions
-		div.col-md-3
+		div.col-md
+			div.stats-card
+				h3 #{nullSessions}
+				p Null Sessions
+		div.col-md
 			div.stats-card
 				h3 #{oldSessions}
 				p Inactive (30+ days)
-		div.col-md-3
+		div.col-md
 			div.stats-card
 				h3 #{veryOldSessions}
 				p Inactive (365+ days)

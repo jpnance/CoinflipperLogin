@@ -175,6 +175,7 @@ module.exports = function(app) {
 		const sessionMap = {};
 		let oldSessionCount = 0;
 		let veryOldSessionCount = 0;
+		let nullSessionCount = 0;
 
 		allSessions.forEach(s => {
 			if (!s.user) return;
@@ -194,6 +195,9 @@ module.exports = function(app) {
 				sessionMap[username].lastActivity = s.lastActivity;
 			}
 
+			if (!s.lastActivity) {
+				nullSessionCount++;
+			}
 			if (!s.lastActivity || s.lastActivity < thirtyDaysAgo) {
 				oldSessionCount++;
 			}
@@ -210,6 +214,7 @@ module.exports = function(app) {
 			sessionMap: sessionMap,
 			totalSessions: allSessions.length,
 			totalUsers: uniqueUsers,
+			nullSessions: nullSessionCount,
 			oldSessions: oldSessionCount,
 			veryOldSessions: veryOldSessionCount
 		});
