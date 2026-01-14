@@ -125,7 +125,7 @@ module.exports.retrieve = (request, response) => {
 	else {
 		Session.findOneAndUpdate({ key: request.body.key }, { '$set': { lastActivity: Date.now() } }).populate('user').populate('pretendingToBe').then((session) => {
 			if (!session) {
-				response.status(404).send({ error: 'No session found for that key.' });
+				response.send(null);
 			}
 			else {
 				// If pretending to be someone, return that user instead
