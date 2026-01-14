@@ -109,11 +109,8 @@ module.exports = function(app) {
 		const user = new User({
 			email: req.body.email.toLowerCase(),
 			username: User.generateUsername(req.body.firstName, req.body.lastName),
-			name: {
-				first: req.body.firstName,
-				last: req.body.lastName,
-				nick: req.body.nickName || req.body.firstName
-			},
+			firstName: req.body.firstName,
+			lastName: req.body.lastName,
 			admin: req.body.admin === 'on'
 		});
 
@@ -153,9 +150,8 @@ module.exports = function(app) {
 
 			user.email = req.body.email.toLowerCase();
 			user.username = req.body.username;
-			user.name.first = req.body.firstName;
-			user.name.last = req.body.lastName;
-			user.name.nick = req.body.nickName || req.body.firstName;
+			user.firstName = req.body.firstName;
+			user.lastName = req.body.lastName;
 			user.admin = req.body.admin === 'on';
 
 			await user.save();

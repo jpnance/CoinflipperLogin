@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker compose run web node bin/flatten-user-schema.js

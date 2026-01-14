@@ -20,9 +20,9 @@ block content
 						}
 					}
 				if pretendUser
-					h2 Hey, "#{pretendUser.name.nick}"!
+					h2 Hey, "#{pretendUser.firstName}"!
 				else
-					h2 Hey, #{session.user.name.nick}!
+					h2 Hey, #{session.user.firstName}!
 				p.text-muted.mb-4 You're logged in and ready to go.
 			else
 				h2 Welcome to Coinflipper

@@ -5,7 +5,7 @@ block title
 
 block content
 	div.page-header.d-flex.justify-content-between.align-items-center
-		h1 Sessions for #{targetUser.name.nick}
+		h1 Sessions for #{targetUser.firstName}
 			small.text-muted.ml-2 (#{targetUser.username})
 		a.btn.btn-outline-secondary(href='/admin/sessions') Back to All Sessions
 
@@ -37,7 +37,7 @@ block content
 				if session.user.admin && targetUser._id.equals(session.user._id)
 					if s.pretendingToBe
 						div.card-footer.alert-warning.mb-0.rounded-0.border-top
-							| Pretending to be #[strong #{s.pretendingToBe.name.first} #{s.pretendingToBe.name.last}] (#{s.pretendingToBe.username}).
+							| Pretending to be #[strong #{s.pretendingToBe.firstName} #{s.pretendingToBe.lastName}] (#{s.pretendingToBe.username}).
 							form.d-inline.ml-2(action='/admin/sessions/' + s.key + '/pretend' method='POST')
 								button.btn.btn-sm.btn-outline-dark(type='submit') Stop
 					else
@@ -47,6 +47,6 @@ block content
 									div.col-12.col-md-auto.mb-2.mb-md-0
 										select.form-control.form-control-sm(name='username')
 											each u in allUsers
-												option(value=u.username) #{u.name.first} #{u.name.last} (#{u.username})
+												option(value=u.username) #{u.firstName} #{u.lastName} (#{u.username})
 									div.col-12.col-md-auto
 										button.btn.btn-sm.btn-outline-primary.btn-block.btn-md-inline(type='submit') Pretend to Be
