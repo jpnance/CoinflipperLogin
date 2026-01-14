@@ -1,3 +1,6 @@
 #!/bin/bash
 
-docker exec -it login-mongo mongosh
+container="login-mongo"
+db="login"
+
+docker exec -it ${container} mongosh ${db}
