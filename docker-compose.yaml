@@ -1,8 +1,8 @@
-version: '3.6'
-
 services:
   web:
     container_name: login-web
+    depends_on:
+      - mongo
     image: node:22-alpine
     volumes:
       - .:/app
