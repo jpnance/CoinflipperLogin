@@ -6,7 +6,6 @@ services:
     image: node:22-alpine
     volumes:
       - .:/app
-      - ../ssl:/ssl
     working_dir: /app
     ports:
       - $PORT:$PORT
