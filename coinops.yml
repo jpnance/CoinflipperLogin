@@ -1,3 +1,4 @@
+slug: login
 domain: login.coinflipper.org
 port: 5422
 type: node
@@ -10,6 +11,9 @@ up_cmd: "docker compose up -d"
 
 # For backups (omit to skip backups)
 backup_cmd: "docker exec login-mongo mongodump --archive --gzip > ~/backups/login/login.gz"
+
+# For metadata generation (used with monotonic alerting)
+mongo_container: login-mongo
 
 # Mongo-specific: collections that should never shrink (for alerting)
 # Only relevant if backup_cmd does a mongodump
