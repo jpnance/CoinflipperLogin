@@ -54,6 +54,8 @@ app.get('/sessions/deleteAll/:key', sessions.deleteAll);
 // Web UI routes
 require('./routes')(app);
 
+let server;
+
 if (process.env.NODE_ENV == 'dev') {
 	const fs = require('fs');
 	const https = require('https');
@@ -65,14 +67,14 @@ if (process.env.NODE_ENV == 'dev') {
 		rejectUnauthorized: false
 	};
 
-	const server = https.createServer(options, app);
+	server = https.createServer(options, app);
 
 	server.listen(port, () => {
 		console.log('Listening on port', port);
 	});
 }
 else {
-	app.listen(port, () => {
+	server = app.listen(port, () => {
 		console.log('Listening on port', port);
 	});
 }
