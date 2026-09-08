@@ -347,6 +347,6 @@ module.exports = function(app) {
 	// API: List all users (admin only)
 	app.get('/api/users', requireLogin, requireAdmin, async (req, res) => {
 		const users = await User.find({}, 'username firstName lastName').sort({ username: 1 });
-		res.json({ users });
+		res.json(users);
 	});
 };
